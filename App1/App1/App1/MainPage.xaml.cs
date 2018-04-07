@@ -19,24 +19,24 @@ namespace App1
 
             StackLayout stackLayout = new StackLayout();
 
+            Button takePhotoBtn = new Button { Text = "Сделать фото" };
             Button getPhotoBtn = new Button { Text = "Выбрать фото" };
-            TextCell text = new TextCell {  };
+            Label gpsLatitude = new Label { Text =  "Широта" };
+            Label gpsLongitude = new Label { Text = "Долгота" };
 
+            stackLayout.Children.Add(takePhotoBtn);
             stackLayout.Children.Add(getPhotoBtn);
+            stackLayout.Children.Add(gpsLatitude);
+            stackLayout.Children.Add(gpsLongitude);
             this.Content = stackLayout;
+
+            Image img = new Image();
 
             //Image img = new Image();
 
             // выбор фото
             getPhotoBtn.Clicked += async (o, e) =>
             {
-                //if (CrossMedia.Current.IsPickPhotoSupported)
-                //{
-                //    MediaFile photo = await CrossMedia.Current.PickPhotoAsync();
-                //    img.Source = ImageSource.FromFile(photo.Path);
-                //}
-               // bool b = await CrossMedia.Current.Initialize();
-
                 if (CrossMedia.Current.IsPickPhotoSupported)
                 {
                     MediaFile photoPicked = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions {  SaveMetaData = true });
@@ -48,10 +48,37 @@ namespace App1
                         using (Stream streamPic = photoPicked.GetStream())
                         {
                             var picInfo = ExifReader.ReadJpeg(streamPic);
-                            text.Text = picInfo.GpsLatitude.ToString();
-                            ExifOrientation orientation = picInfo.Orientation;
+                            gpsLatitude.Text = picInfo.GpsLatitude.ToString();
+                            gpsLongitude.Text = picInfo.GpsLongitude.ToString();
                         }
                     }
+                }
+            };
+
+            takePhotoBtn.Clicked += async (o, e) =>
+            {
+                if (CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported)
+                {
+                    MediaFile file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+                    {
+                        SaveToAlbum = true,
+                        Directory = "android/data/com.android.providers.media",
+                        Name = $"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.jpg",
+                        SaveMetaData = true
+                    });
+
+                    if (file == null)
+                    {
+                        using (Stream streamPic = file.GetStream())
+                        {
+                            var picInfo = ExifReader.ReadJpeg(streamPic);
+                            gpsLatitude.Text = picInfo.GpsLatitude.ToString();
+                            gpsLongitude.Text = picInfo.GpsLongitude.ToString();
+                        }
+                        return;
+                    }
+                    
+                    img.Source = ImageSource.FromFile(file.Path);
                 }
             };
         }
