@@ -72,8 +72,8 @@ namespace App1
                         using (Stream streamPic = file.GetStream())
                         {
                             var picInfo = ExifReader.ReadJpeg(streamPic);
-                            gpsLatitude.Text = picInfo.GpsLatitude.ToString();
-                            gpsLongitude.Text = picInfo.GpsLongitude.ToString();
+                            gpsLatitude.Text = picInfo.GpsLatitude[0].ToString();
+                            gpsLongitude.Text = picInfo.GpsLongitude[0].ToString();
                         }
                         return;
                     }
