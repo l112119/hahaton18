@@ -20,11 +20,12 @@ namespace App1
             StackLayout stackLayout = new StackLayout();
 
             Button getPhotoBtn = new Button { Text = "Выбрать фото" };
+            TextCell text = new TextCell {  };
 
             stackLayout.Children.Add(getPhotoBtn);
             this.Content = stackLayout;
 
-            Image img = new Image();
+            //Image img = new Image();
 
             // выбор фото
             getPhotoBtn.Clicked += async (o, e) =>
@@ -38,7 +39,7 @@ namespace App1
 
                 if (CrossMedia.Current.IsPickPhotoSupported)
                 {
-                    MediaFile photoPicked = await CrossMedia.Current.PickPhotoAsync();
+                    MediaFile photoPicked = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions {  SaveMetaData = true });
 
                     if (photoPicked != null)
                     {
@@ -47,6 +48,7 @@ namespace App1
                         using (Stream streamPic = photoPicked.GetStream())
                         {
                             var picInfo = ExifReader.ReadJpeg(streamPic);
+                            text.Text = picInfo.GpsLatitude.ToString();
                             ExifOrientation orientation = picInfo.Orientation;
                         }
                     }
