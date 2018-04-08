@@ -51,28 +51,9 @@ namespace App1
 
                         using (Stream streamPic = photoPicked.GetStream())
                         {
-<<<<<<< HEAD
-                            //    ExifReader picInfo = new ExifReader(ExifReader.ReadJpeg(streamPic));
-                            //picInfo.
-
-                            //double[] latitudeComponents;
-                            //streamPic.GetTagValue(ExifTags.GPSLatitude, out latitudeComponents);
-
-                            //double[] longitudeComponents;
-                            //reader.GetTagValue(ExifTags.GPSLongitude, out longitudeComponents);
-
-                            //// Lat/long are stored as D°M'S" arrays, so you will need to reconstruct their values as below:
-                            //var latitude = latitudeComponents[0] + latitudeComponents[1] / 60 + latitudeComponents[2] / 3600;
-                            //var longitude = longitudeComponents[0] + longitudeComponents[1] / 60 + longitudeComponents[2] / 3600;
-
                             JpegInfo picMetadata = ExifReader.ReadJpeg(streamPic);
                             double[] latitudeComponents = picMetadata.GpsLatitude;
                             double[] longitudeComponents = picMetadata.GpsLongitude;
-=======
-                            var picInfo = ExifReader.ReadJpeg(streamPic);
-                            double[] latitudeComponents = picInfo.GpsLatitude;
-                            double[] longitudeComponents = picInfo.GpsLongitude;
->>>>>>> ea50824714ed73124082de0b2f13cd2a6d645f46
 
                             gpsLatitude.Text = latitudeComponents[0].ToString() + latitudeComponents[1] / 60 + latitudeComponents[2] / 3600;
                             gpsLongitude.Text = longitudeComponents[0].ToString() + longitudeComponents[1] / 60 + longitudeComponents[2] / 3600;
