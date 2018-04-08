@@ -32,6 +32,10 @@ namespace App1
 
             Image img = new Image();
 
+            //*Точки маршрута
+            List<WayPoint> wayPoints = new List<WayPoint>() {  };
+            wayPoints.Add(new WayPoint("", "08.04.2018", "55,750904", "48,748493", "the first point"));
+
             //Image img = new Image();
 
             // выбор фото
@@ -60,12 +64,21 @@ namespace App1
                             //var latitude = latitudeComponents[0] + latitudeComponents[1] / 60 + latitudeComponents[2] / 3600;
                             //var longitude = longitudeComponents[0] + longitudeComponents[1] / 60 + longitudeComponents[2] / 3600;
 
-                            var picInfo = ExifReader.ReadJpeg(streamPic);
-                            double[] latitudeComponents = picInfo.GpsLatitude;
-                            double[] longitudeComponents = picInfo.GpsLongitude;
+                            JpegInfo picMetadata = ExifReader.ReadJpeg(streamPic);
+                            double[] latitudeComponents = picMetadata.GpsLatitude;
+                            double[] longitudeComponents = picMetadata.GpsLongitude;
 
                             gpsLatitude.Text = latitudeComponents[0].ToString() + latitudeComponents[1] / 60 + latitudeComponents[2] / 3600;
                             gpsLongitude.Text = longitudeComponents[0].ToString() + longitudeComponents[1] / 60 + longitudeComponents[2] / 3600;
+
+                            WayPoint openedPhotoWP = new WayPoint();
+                            openedPhotoWP.DateOfCreation = picMetadata.DateTimeOriginal;
+                            openedPhotoWP.GpsLatitude = gpsLatitude.Text;
+                            openedPhotoWP.GpsLongitude = gpsLongitude.Text;
+                            openedPhotoWP.PicturePath = photoPicked.Path;
+                            openedPhotoWP.Comment = picMetadata.Description; 
+
+                            wayPoints.Add(openedPhotoWP);
                         }
                     }
                 }
@@ -77,11 +90,17 @@ namespace App1
                 {
                     MediaFile file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
                     {
+                        DefaultCamera = CameraDevice.Rear,
                         SaveToAlbum = true,
-                        Directory = "android/data/com.android.providers.media",
+                        //Directory = "android/data/com.android.providers.media",
                         Name = $"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.jpg",
                         SaveMetaData = true
                     });
+
+                    //Intent intent = new Intent(MediaStore.ActionImageCapture);
+                    //App._file = new File(App._dir, String.Format("myPhoto_{0}.jpg", Guid.NewGuid()));
+                    //intent.PutExtra(MediaStore.ExtraOutput, Uri.FromFile(App._file));
+                    //StartActivityForResult(intent, 0);
 
                     if (file == null)
                     {
