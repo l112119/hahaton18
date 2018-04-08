@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android;
+using Android.Support.V4.App;
 
 namespace App1.Droid
 {
@@ -17,8 +19,11 @@ namespace App1.Droid
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
-            base.OnCreate(bundle);
+            //ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.WriteExternalStorage }, 2);
+            //ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.ReadExternalStorage }, 3);
 
+            base.OnCreate(bundle);
+            Xamarin.FormsMaps.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
         }
